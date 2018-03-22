@@ -42,11 +42,24 @@ import static org.graylog2.shared.metrics.MetricUtils.safelyRegister;
 
 @Singleton
 public class InputBufferImpl implements InputBuffer {
+
+    //sl4j.api 作为日志实现的门面，可以无缝变更日志的具体实现。
     private static final Logger LOG = LoggerFactory.getLogger(InputBufferImpl.class);
 
     private final RingBuffer<RawMessageEvent> ringBuffer;
+
     private final Meter incomingMessages;
 
+    /**
+     * <p>
+     *     每个构造删除，性能数据收集注册器
+     * </p>
+     * @param metricRegistry  性能数据注册器
+     * @param configuration   配置
+     * @param directMessageHandlerProvider
+     * @param rawMessageEncoderHandlerProvider
+     * @param spoolingMessageHandlerProvider
+     */
     @Inject
     public InputBufferImpl(MetricRegistry metricRegistry,
                            BaseConfiguration configuration,
@@ -100,7 +113,7 @@ public class InputBufferImpl implements InputBuffer {
     @Override
     public void insert(RawMessage message) {
         ringBuffer.publishEvent(RawMessageEvent.TRANSLATOR, message);
-        incomingMessages.mark();
+        incomingMessages.mark(); // 标记，性能指标数据采集
     }
 
     @Override

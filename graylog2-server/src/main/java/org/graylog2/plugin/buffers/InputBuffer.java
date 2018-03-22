@@ -18,7 +18,15 @@ package org.graylog2.plugin.buffers;
 
 import org.graylog2.plugin.journal.RawMessage;
 
+/**
+ * <p>
+ *     输入buffer
+ * </p>
+ * @author 青涯
+ */
 public interface InputBuffer {
+
+    //插入一条消息原文
     void insert(RawMessage message);
 
     long getUsage();
